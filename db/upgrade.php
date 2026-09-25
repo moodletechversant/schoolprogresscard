@@ -23,36 +23,42 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die();
 
- require_once(__DIR__.'/upgradelib.php');
- 
- function xmldb_local_progresscard_upgrade($oldversion) {
-     global $DB;
-     $dbman = $DB->get_manager();
+require_once(__DIR__ . '/upgradelib.php');
 
-     if ($oldversion < 2024021611) {
-         $table = new xmldb_table('type_of_exam');
-         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE,null);
-         $table->add_field('typeofexam', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '');
-        
-         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-         if (!$dbman->table_exists($table)) {
-             $dbman->create_table($table);
-         }
-         
-        // Create table custom_quiz
+/**
+ * Execute local_progresscard upgrade from the given old version.
+ *
+ * @param int $oldversion
+ * @return bool
+ */
+function xmldb_local_progresscard_upgrade($oldversion) {
+    global $DB;
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2024021611) {
+        $table = new xmldb_table('type_of_exam');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('typeofexam', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '');
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Create table custom_quiz.
         $table2 = new xmldb_table('custom_quiz');
         $table2->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table2->add_field('quiz_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table2->add_field('type_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table2->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table2->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
         if (!$dbman->table_exists($table2)) {
             $dbman->create_table($table2);
         }
     }
 
-    upgrade_plugin_savepoint(true,2024021611,'local','progress_card'); 
+    upgrade_plugin_savepoint(true, 2024021611, 'local', 'progress_card');
 
- return true;
+    return true;
 }
