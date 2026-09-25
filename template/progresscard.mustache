@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.17/css/uikit.min.css" />
+        <link rel="stylesheet" href={{css_link}} />
+</head>
+{{#is_assigned_student}}
+<div class="dashboard-wrap pt-5">
+ <div class="container">
+     <div class="cards progress-card col-md-10 mx-auto" style="height: auto;">
+        <h1><b>PROGRESS CARD</b></h1>
+          
+         <div class="row mt-5">
+             <div class="col-md-6">
+                <div class="form-group">
+                    <label>Student Name</label>
+                  <h4 class="mt-0 ">{{fname}}</h4>
+                </div>
+              </div>
+             <div class="col-md-6">
+                <div class="form-group">
+                    <label>Teacher Name</label>
+                  <h4 class="mt-0 ">{{classteacher}}</h4>
+                </div>
+              </div>
+        </div>
+        <div class="row mt-4">
+             <div class="col-md-6">
+                <div class="form-group">
+                    <label>Academic Year </label>
+                  <h4 class="mt-0 ">{{academic_year}}</h4>
+                </div>
+             </div>
+             <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Class </label>
+                    <h4 class="mt-0 ">{{division}}</h4>
+                  </div>
+               </div>
+          
+         </div>
+
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="form-group">
+               <label>Select Type Of Exam</label>
+               <select class="form-select" aria-label="Select Type of Exam" id="typeofexam" style="width: 1030px;">
+               <option value="" selected>Select</option>
+               {{#templateData}}
+               {{#startYearOptions}}
+              <option value={{value}}>{{label}}</option>
+              {{/startYearOptions}}
+              {{/templateData}}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div id="demo">
+
+        </div>     
+        
+
+    </div>
+  </div>
+</div>
+{{/is_assigned_student}}
+{{^is_assigned_student}}
+    <p><font color="red">your child is not assigned to any class please contact their class teacher.</font></p>
+{{/is_assigned_student}}
+
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#typeofexam").change(function() { // Corrected ID
+            var examtype = $(this).val();
+            var idofchild={{childid}};
+            var division_id={{division_id}};
+            if (examtype != "") {
+                $.ajax({
+                    url: "test.php",
+                    data: { exam_id: examtype,idofchild: idofchild,division_id: division_id},
+                    type: 'POST',
+                    success: function(data) {
+                        $("#demo").html(data); // Corrected ID
+                    }
+                });
+            }
+        });
+    });
+</script>
